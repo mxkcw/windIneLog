@@ -1,4 +1,4 @@
-module github.com/mxkcw/windIne
+module github.com/mxkcw/windIneLog
 
 go 1.22.3
 

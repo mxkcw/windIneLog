@@ -2,7 +2,7 @@
 
 set -e
 
-ProductName=windIne
+ProductName=windIneLog
 Product_version_key="ProjectVersion"
 REPO_PFEX=mxkcw/$ProductName
 VersionFile=./config/config.go

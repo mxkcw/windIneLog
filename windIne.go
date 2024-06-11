@@ -2,9 +2,9 @@ package windIne
 
 import (
 	"fmt"
-	"github.com/mxkcw/windIne/config"
-	"github.com/mxkcw/windIne/windIne_http"
-	"github.com/mxkcw/windIne/windIne_log"
+	"github.com/mxkcw/windIneLog/config"
+	"github.com/mxkcw/windIneLog/windIne_http"
+	"github.com/mxkcw/windIneLog/windIne_log"
 )
 
 type RunMode int

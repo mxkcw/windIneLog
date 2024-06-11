@@ -4,7 +4,7 @@ package windIne_net
 Package windIne_net 网络工具
 */
 import (
-	"github.com/mxkcw/windIne/windIne_string"
+	"github.com/mxkcw/windIneLog/windIne_string"
 	"net"
 	"os/exec"
 	"strings"

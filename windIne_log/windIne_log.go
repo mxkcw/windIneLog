@@ -7,8 +7,8 @@ package windIne_log
 import (
 	"fmt"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
-	"github.com/mxkcw/windIne/windIne_color"
-	"github.com/mxkcw/windIne/windIne_time"
+	"github.com/mxkcw/windIneLog/windIne_color"
+	"github.com/mxkcw/windIneLog/windIne_time"
 	"github.com/sirupsen/logrus"
 	"os"
 	"regexp"

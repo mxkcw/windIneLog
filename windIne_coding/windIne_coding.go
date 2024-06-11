@@ -2,7 +2,7 @@ package windIne_coding
 
 import (
 	"fmt"
-	"github.com/mxkcw/windIne/windIne_cmd"
+	"github.com/mxkcw/windIneLog/windIne_cmd"
 	"os"
 	"os/exec"
 	"path/filepath"

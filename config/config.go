@@ -4,8 +4,8 @@ Package config 配置文件
 package config
 
 const (
-	ProjectName        = "windIne"
-	ProjectVersion     = "v0.0.2"
+	ProjectName        = "windIneLog"
+	ProjectVersion     = "v0.0.3"
 	ProjectDescription = "[Golang]日常开发工具箱"
 )
 

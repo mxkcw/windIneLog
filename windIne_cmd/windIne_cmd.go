@@ -2,8 +2,8 @@ package windIne_cmd
 
 import (
 	"bytes"
-	"github.com/mxkcw/windIne/windIne_encoding"
-	"github.com/mxkcw/windIne/windIne_string"
+	"github.com/mxkcw/windIneLog/windIne_encoding"
+	"github.com/mxkcw/windIneLog/windIne_string"
 	"os/exec"
 	"runtime"
 	"sync"
