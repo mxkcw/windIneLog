@@ -15,7 +15,8 @@ var (
 )
 
 type RedisConfig struct {
-	Addr       string `yaml:"addr" json:"addr"`              // address
+	Addr       string `yaml:"addr" json:"addr"` // address
+	Port       string `yaml:"port" json:"port"`
 	Pwd        string `yaml:"pwd" json:"pwd"`                // pwd
 	SocketBuck int    `yaml:"socketBuck" json:"socket_buck"` // 插槽
 }
@@ -31,7 +32,7 @@ func SetupRedisConnection(redisCfg RedisConfig, prefixStr string) (success bool)
 		OwnerRedis = &GTRedis{
 			cfg: &redisCfg,
 			redisClient: redis.NewClient(&redis.Options{
-				Addr:     redisCfg.Addr,
+				Addr:     fmt.Sprintf("%s:%s", redisCfg.Addr, redisCfg.Port),
 				Password: redisCfg.Pwd,        // no password set
 				DB:       redisCfg.SocketBuck, // use default DB
 			}),
