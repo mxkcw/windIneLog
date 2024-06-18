@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"github.com/mxkcw/windIneLog/windIne_log"
 	"github.com/redis/go-redis/v9"
+	"time"
 )
 
 var (
 	isSetup    bool
-	OwnerRedis *GTRedis
+	OwnerRedis *WindIneRedis
 	ctx        = context.Background()
 	prefix     string
 )
@@ -21,7 +22,7 @@ type RedisConfig struct {
 	SocketBuck int    `yaml:"socketBuck" json:"socket_buck"` // 插槽
 }
 
-type GTRedis struct {
+type WindIneRedis struct {
 	cfg         *RedisConfig
 	redisClient *redis.Client
 }
@@ -29,7 +30,7 @@ type GTRedis struct {
 // SetupRedisConnection 初始化Redis连接
 func SetupRedisConnection(redisCfg RedisConfig, prefixStr string) (success bool) {
 	if isSetup == false {
-		OwnerRedis = &GTRedis{
+		OwnerRedis = &WindIneRedis{
 			cfg: &redisCfg,
 			redisClient: redis.NewClient(&redis.Options{
 				Addr:     fmt.Sprintf("%s:%s", redisCfg.Addr, redisCfg.Port),
@@ -52,15 +53,22 @@ func SetupRedisConnection(redisCfg RedisConfig, prefixStr string) (success bool)
 }
 
 // Set 插入单条数据
-func (gtr *GTRedis) Set(key string, value string) error {
+func (gtr *WindIneRedis) Set(key string, value string) error {
 	aKey := fmt.Sprintf("%s:%s", prefix, key)
 	err := gtr.redisClient.Set(ctx, aKey, value, 0).Err()
 
 	return err
 }
 
+// SetStrByExpire 插入过期时间
+func (gtr *WindIneRedis) SetStrByExpire(key, value string, time time.Duration) error {
+	aKey := fmt.Sprintf("%s:%s", prefix, key)
+	err := gtr.redisClient.Set(ctx, aKey, value, time).Err()
+	return err
+}
+
 // Get 获取单条数据
-func (gtr *GTRedis) Get(key string) (string, error) {
+func (gtr *WindIneRedis) Get(key string) (string, error) {
 	aKey := fmt.Sprintf("%s:%s", prefix, key)
 	val, err := gtr.redisClient.Get(ctx, aKey).Result()
 
@@ -68,7 +76,7 @@ func (gtr *GTRedis) Get(key string) (string, error) {
 }
 
 // Del 删除单条数据
-func (gtr *GTRedis) Del(key string) error {
+func (gtr *WindIneRedis) Del(key string) error {
 	aKey := fmt.Sprintf("%s:%s", prefix, key)
 
 	err := gtr.redisClient.Del(ctx, aKey).Err()
@@ -77,7 +85,7 @@ func (gtr *GTRedis) Del(key string) error {
 }
 
 // Keys 删除单条数据
-func (gtr *GTRedis) Keys(key string) ([]string, error) {
+func (gtr *WindIneRedis) Keys(key string) ([]string, error) {
 	aKey := fmt.Sprintf("%s:%s", prefix, key)
 	val, err := gtr.redisClient.Keys(ctx, aKey).Result()
 
