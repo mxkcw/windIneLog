@@ -93,12 +93,12 @@ func (gtr *WindIneRedis) Keys(key string) ([]string, error) {
 }
 
 // Exists 检测是否过期
-func (gtr *WindIneRedis) Exists(key string) (bool, error) {
+func (gtr *WindIneRedis) Exists(key string) bool {
 	aKey := fmt.Sprintf("%s:%s", prefix, key)
-	val, err := gtr.redisClient.Exists(ctx, aKey).Result()
-	if val == 1 && err != nil {
-		return false, err
+	val, _ := gtr.redisClient.Exists(ctx, aKey).Result()
+	if val > 0 {
+		return true
 	} else {
-		return true, nil
+		return false
 	}
 }
