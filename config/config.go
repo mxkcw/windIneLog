@@ -5,7 +5,7 @@ package config
 
 const (
 	ProjectName        = "windIneLog"
-	ProjectVersion     = "v0.0.7"
+	ProjectVersion     = "v0.0.8"
 	ProjectDescription = "[Golang]日常开发工具箱"
 )
 
