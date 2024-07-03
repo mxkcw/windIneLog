@@ -85,6 +85,13 @@ func Post(url string, data []byte, endFunc func(respData []byte, err error)) {
 	endFunc(resp, err)
 }
 
+// PostResult Post请
+func PostResult(url string, data []byte) (respData []byte, err error) {
+	customClient := NewHttpClient(DefaultTimeout)
+	resp, err := customClient.Post(url, "", "", data)
+	return resp, err
+}
+
 // PostWithBasicAuth 带BasicAuth的Post
 func PostWithBasicAuth(url string, authName string, authPwd string, data []byte, endFunc func(respData []byte, err error)) {
 	customClient := NewHttpClient(DefaultTimeout)
@@ -104,6 +111,31 @@ func (hc *HttpClient) Post(url string, authName string, authPwd string, data []b
 	//	设置basicAuth
 	if len(authName) > 1 && len(authPwd) > 1 {
 		req.SetBasicAuth(authName, authPwd)
+	}
+
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("User-Agent", UserAgent)
+	resp, err := hc.Client.Do(req)
+	if err != nil {
+		return nil, errors.New("http do error: " + err.Error())
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, errors.New("http read error: " + err.Error())
+	}
+
+	return body, nil
+}
+
+// PostResult Post请求带返回值
+func (hc *HttpClient) PostResult(url string, data []byte) ([]byte, error) {
+	hc.mutex.Lock()
+	defer hc.mutex.Unlock()
+	req, err := http.NewRequest("POST", url, io.NopCloser(bytes.NewReader(data)))
+	if err != nil {
+		return nil, errors.New("http new request error: " + err.Error())
 	}
 
 	req.Header.Add("Content-Type", "application/json")
