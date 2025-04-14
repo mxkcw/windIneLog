@@ -72,7 +72,6 @@ func (aMysql *GTORMMysql) OPenMysql(dbUser string, dbPwd string, dbName string, 
 }
 
 // init log config
-// new
 func settingLogConfig(mode string) logger.Interface {
 	var logInfo logger.LogLevel
 	switch mode {
