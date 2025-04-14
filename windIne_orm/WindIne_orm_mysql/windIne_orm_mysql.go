@@ -38,6 +38,16 @@ func Instance() *GTORMMysql {
 	return mysqlInstance
 }
 
+func CloseDB() {
+	db, err := mysqlInstance.MysqlDB.DB()
+	if err != nil {
+		windIne_log.LogErrorf("db err: %v", err)
+	}
+	if err = db.Close(); err != nil {
+		windIne_log.LogErrorf("close db failed: %v", err)
+	}
+}
+
 func (aMysql *GTORMMysql) OPenMysql(dbUser string, dbPwd string, dbName string, dbAddress string, dbPort int, timeZone windIne_orm_config.WindIneTimeZone, skipDefaultTransaction bool, prepareStmt bool, mod string, endFunc func(err error)) {
 	aMysql.mux.Lock()
 	defer aMysql.mux.Unlock()
