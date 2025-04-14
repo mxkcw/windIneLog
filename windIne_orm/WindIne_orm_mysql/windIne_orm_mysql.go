@@ -23,6 +23,13 @@ var (
 	mysqlInstance *GTORMMysql
 )
 
+type Writer struct {
+}
+
+func (w Writer) Printf(format string, args ...interface{}) {
+	windIne_log.LogInfof(format, args...)
+}
+
 func Instance() *GTORMMysql {
 	mysqlOnce.Do(func() {
 		mysqlInstance = &GTORMMysql{}
@@ -31,14 +38,15 @@ func Instance() *GTORMMysql {
 	return mysqlInstance
 }
 
-func (aMysql *GTORMMysql) OPenMysql(dbUser string, dbPwd string, dbName string, dbAddress string, dbPort int, timeZone windIne_orm_config.WindIneTimeZone, endFunc func(err error)) {
+func (aMysql *GTORMMysql) OPenMysql(dbUser string, dbPwd string, dbName string, dbAddress string, dbPort int, timeZone windIne_orm_config.WindIneTimeZone, skipDefaultTransaction bool, prepareStmt bool, mod string, endFunc func(err error)) {
 	aMysql.mux.Lock()
 	defer aMysql.mux.Unlock()
 	connectionStr := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true&loc=%s", dbUser, dbPwd, dbAddress, dbPort, dbName, timeZone.String())
-	alogleve := logger.Silent
 
 	aMysql.MysqlDB, aMysql.MysqlError = gorm.Open(mysql.Open(connectionStr), &gorm.Config{
-		Logger: logger.Default.LogMode(alogleve),
+		SkipDefaultTransaction: skipDefaultTransaction,
+		PrepareStmt:            prepareStmt,
+		Logger:                 settingLogConfig(mod),
 	})
 	if aMysql.MysqlError != nil {
 		endFunc(errors.New(fmt.Sprintf("连接数据库失败==%s", aMysql.MysqlError)))
@@ -51,6 +59,29 @@ func (aMysql *GTORMMysql) OPenMysql(dbUser string, dbPwd string, dbName string, 
 		windIne_log.LogInfof("数据库==%s,连接成功", dbName)
 		endFunc(nil)
 	}
+}
+
+// init log config
+func settingLogConfig(mode string) logger.Interface {
+	var logInfo logger.LogLevel
+	switch mode {
+	case "dev":
+		logInfo = logger.Info
+	case "pre":
+		logInfo = logger.Silent
+	case "pro":
+		logInfo = logger.Error
+	}
+	newLogger := logger.New(
+		Writer{},
+		logger.Config{
+			SlowThreshold:             200 * time.Millisecond, // Slow SQL threshold
+			LogLevel:                  logInfo,                // Log level
+			IgnoreRecordNotFoundError: true,                   // Ignore ErrRecordNotFound error for logger
+			Colorful:                  true,                   // Disable color
+		},
+	)
+	return newLogger
 }
 
 // InsertData 单例
