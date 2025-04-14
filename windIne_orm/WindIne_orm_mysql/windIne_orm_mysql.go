@@ -12,6 +12,11 @@ import (
 	"time"
 )
 
+/**
+  1.增加日志的可配置
+  2.OPenMysql参数进行修改
+*/
+
 type GTORMMysql struct {
 	MysqlDB    *gorm.DB
 	MysqlError error
